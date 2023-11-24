@@ -6,7 +6,7 @@ public interface Day {
 
     default String part2() {
         return "";
-    };
+    }
 
     default void init() {
     }

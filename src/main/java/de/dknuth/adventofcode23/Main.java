@@ -5,10 +5,10 @@ import de.dknuth.adventofcode23.day.DayFactory;
 public class Main {
     public static void main(String[] args) {
         int dayNumber = 1;
-        print(dayNumber);
+        printSolution(dayNumber);
     }
 
-    private static void print(int dayNumber) {
+    private static void printSolution(int dayNumber) {
         if (DayFactory.canCreate(dayNumber)) {
             System.out.println(solution(dayNumber));
         } else {
@@ -17,15 +17,13 @@ public class Main {
     }
 
     private static String solution(int dayNumber) {
-        StringBuilder builder = new StringBuilder("\n");
-        builder.append("Day ");
-        builder.append(dayNumber);
-        builder.append(":\n\tPart 1: ");
-        builder.append(solutionOfPart1(dayNumber));
-        builder.append("\n\tPart 2: ");
-        builder.append(solutionOfPart2(dayNumber));
-        builder.append("\n");
-        return builder.toString();
+        return String.format("""
+
+                Day %d:
+                        Part 1: %s
+                        Part 2: %s
+
+                """, dayNumber, solutionOfPart1(dayNumber), solutionOfPart2(dayNumber));
     }
 
     private static String solutionOfPart1(int dayNumber) {

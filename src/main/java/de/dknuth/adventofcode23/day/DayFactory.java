@@ -10,7 +10,7 @@ import de.dknuth.adventofcode23.day01.Day01;
 public class DayFactory {
 
     private DayFactory() {
-    };
+    }
 
     private static final Map<Integer, Class<? extends Day>> DAY_CLASSES = Map.ofEntries(
             entry(1, Day01.class)
