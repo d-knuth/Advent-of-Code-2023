@@ -10,13 +10,30 @@ public class Main {
 
     private static void print(int dayNumber) {
         if (DayFactory.canCreate(dayNumber)) {
-            StringBuilder builder = new StringBuilder("\n");
-            builder.append("Day " + dayNumber + ":\n");
-            builder.append("\tPart 1: " + DayFactory.create(dayNumber).part1() + "\n");
-            builder.append("\tPart 2: " + DayFactory.create(dayNumber).part2() + "\n");
-            System.out.println(builder.toString());
+            System.out.println(solution(dayNumber));
         } else {
             System.out.println("Day has not been solved yet.");
         }
     }
+
+    private static String solution(int dayNumber) {
+        StringBuilder builder = new StringBuilder("\n");
+        builder.append("Day ");
+        builder.append(dayNumber);
+        builder.append(":\n\tPart 1: ");
+        builder.append(solutionOfPart1(dayNumber));
+        builder.append("\n\tPart 2: ");
+        builder.append(solutionOfPart2(dayNumber));
+        builder.append("\n");
+        return builder.toString();
+    }
+
+    private static String solutionOfPart1(int dayNumber) {
+        return DayFactory.create(dayNumber).part1();
+    }
+
+    private static String solutionOfPart2(int dayNumber) {
+        return DayFactory.create(dayNumber).part2();
+    }
+
 }
