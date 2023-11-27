@@ -4,7 +4,7 @@ import de.dknuth.adventofcode23.day.DayFactory;
 
 public class Main {
     public static void main(String[] args) {
-        int dayNumber = DayFactory.getMaxDayNumber();
+        int dayNumber = 1;
         printSolution(dayNumber);
     }
 
@@ -12,7 +12,10 @@ public class Main {
         if (DayFactory.canCreate(dayNumber)) {
             System.out.println(solution(dayNumber));
         } else {
-            System.out.println("Day has not been solved yet.");
+            System.out.println("""
+
+                    Day has not been solved yet.
+                    """);
         }
     }
 
@@ -22,7 +25,6 @@ public class Main {
                 Day %d:
                         Part 1: %s
                         Part 2: %s
-
                 """, dayNumber, solutionToPart1(dayNumber), solutionToPart2(dayNumber));
     }
 
