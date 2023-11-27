@@ -5,13 +5,13 @@ import de.dknuth.adventofcode23.day.Day;
 public class Day01 implements Day {
 
     @Override
-    public String part1() {
-        return "ergebnis 1";
+    public String solutionToPart1() {
+        return "Solution 1";
     }
 
     @Override
-    public String part2() {
-        return "ergebnis 2";
+    public String solutionToPart2() {
+        return "Solution 2";
     }
 
 }

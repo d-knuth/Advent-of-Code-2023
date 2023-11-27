@@ -2,9 +2,9 @@ package de.dknuth.adventofcode23.day;
 
 public interface Day {
 
-    String part1();
+    String solutionToPart1();
 
-    default String part2() {
+    default String solutionToPart2() {
         return "";
     }
 

@@ -3,7 +3,9 @@ package de.dknuth.adventofcode23.day;
 import static java.util.Map.entry;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import de.dknuth.adventofcode23.day01.Day01;
 
@@ -42,6 +44,11 @@ public class DayFactory {
 
     public static boolean canCreate(int daynumber) {
         return DAY_CLASSES.containsKey(daynumber);
+    }
+
+    public static int getMaxDayNumber() {
+        return DAY_CLASSES.keySet().stream().max(Comparator.naturalOrder())
+                .orElseThrow(() -> new NoSuchElementException("No Solution present."));
     }
 
     public static Day create(int dayNumber) {
