@@ -5,6 +5,7 @@ import de.dknuth.adventofcode23.day.DayFactory;
 public class Main {
     public static void main(String[] args) {
         int dayNumber = 1;
+        DayFactory.showSolvedDays();
         printSolution(dayNumber);
     }
 
@@ -12,19 +13,19 @@ public class Main {
         if (DayFactory.canCreate(dayNumber)) {
             System.out.println(solution(dayNumber));
         } else {
-            System.out.println("""
+            System.out.println(String.format("""
 
-                    Day has not been solved yet.
-                    """);
+                    Day %d has not been solved yet.
+                    """, dayNumber));
         }
     }
 
     private static String solution(int dayNumber) {
         return String.format("""
 
-                Day %d:
-                        Part 1: %s
-                        Part 2: %s
+                Solution to Day %d:
+                                    Part 1: %s
+                                    Part 2: %s
                 """, dayNumber, solutionToPart1(dayNumber), solutionToPart2(dayNumber));
     }
 

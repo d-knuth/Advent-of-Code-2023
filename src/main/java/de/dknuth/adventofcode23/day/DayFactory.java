@@ -16,6 +16,15 @@ public class DayFactory {
         }
     }
 
+    public static void showSolvedDays() {
+        System.out.println("Solved days:");
+        for (int i = 1; i < 26; i++) {
+            if (canCreate(i)) {
+                System.out.println("Day " + i);
+            }
+        }
+    }
+
     public static Day create(int dayNumber) {
         try {
             Class<?> clazz = Class.forName(classNameOf(dayNumber));
