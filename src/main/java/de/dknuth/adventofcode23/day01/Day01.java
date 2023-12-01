@@ -43,14 +43,14 @@ public class Day01 implements Day {
                 .toString();
     }
 
-    private String replaceSpelledOutDigits(String s) {
+    String replaceSpelledOutDigits(String s) {
         for (Entry<String, String> e : STRING_TO_DIGIT.entrySet()) {
             s = s.replace(e.getKey(), e.getValue());
         }
         return s;
     }
 
-    private String numberMadeOfFirstAndLastDigits(String s) {
+    String numberMadeOfFirstAndLastDigits(String s) {
         return firstDigitOf(s) + lastDigitOf(s);
     }
 
