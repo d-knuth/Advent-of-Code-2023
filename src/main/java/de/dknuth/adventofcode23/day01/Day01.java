@@ -12,17 +12,17 @@ import de.dknuth.adventofcode23.utils.InputReader;
 public class Day01 implements Day {
     private static final List<String> input = InputReader.readInput("inputDay01.txt");
 
-    private static final Map<String, Integer> STRING_TO_DIGIT = Map.ofEntries(
-            entry("zero", 0),
-            entry("one", 1),
-            entry("two", 2),
-            entry("three", 3),
-            entry("four", 4),
-            entry("five", 5),
-            entry("six", 6),
-            entry("seven", 7),
-            entry("eight", 8),
-            entry("nine", 9));
+    private static final Map<String, String> STRING_TO_DIGIT = Map.ofEntries(
+            entry("zero", "z0ro"),
+            entry("one", "o1e"),
+            entry("two", "t2o"),
+            entry("three", "t3ree"),
+            entry("four", "f4ur"),
+            entry("five", "f5ve"),
+            entry("six", "s6x"),
+            entry("seven", "s7ven"),
+            entry("eight", "e8ght"),
+            entry("nine", "n9ne"));
 
     @Override
     public String solutionToPart1() {
@@ -36,49 +36,18 @@ public class Day01 implements Day {
     @Override
     public String solutionToPart2() {
         return input.stream()
-                .map(s -> replaceFirstAndLastSpelledOutDigit(s))
+                .map(this::replaceSpelledOutDigits)
                 .map(s -> findFirstDigit(s) + findLastDigit(s))
                 .map(Integer::parseInt)
                 .reduce(0, (a, b) -> a + b)
                 .toString();
     }
 
-    private String replaceFirstAndLastSpelledOutDigit(String s) {
-        String result = s;
-        String firstSpelledOutDigit = "zero";
-        int indexOfFirst = -1;
-        String lastSpelledOutDigit = "zero";
-        int indexOfLast = -1;
-        for (Entry<String, Integer> e : STRING_TO_DIGIT.entrySet()) {
-            int index = result.indexOf(e.getKey());
-            if (index != -1 && (indexOfFirst == -1 || index < indexOfFirst)) {
-                indexOfFirst = index;
-                firstSpelledOutDigit = e.getKey();
-            }
-            index = result.lastIndexOf(e.getKey());
-            if (index != -1 && index > indexOfLast) {
-                indexOfLast = index;
-                lastSpelledOutDigit = e.getKey();
-            }
+    private String replaceSpelledOutDigits(String s) {
+        for (Entry<String, String> e : STRING_TO_DIGIT.entrySet()) {
+            s = s.replace(e.getKey(), e.getValue());
         }
-        // If first spelled out digit ends with same character as last spelled out digit
-        // add one character between: eighthree->eightthree
-        if (lastCharEqualsFirstChar(firstSpelledOutDigit, lastSpelledOutDigit)) {
-            result = duplicateFirstCharOfLastSpelledOutDigit(result, lastSpelledOutDigit, indexOfLast);
-        }
-        result = result.replace(firstSpelledOutDigit, STRING_TO_DIGIT.get(firstSpelledOutDigit).toString());
-        result = result.replace(lastSpelledOutDigit, STRING_TO_DIGIT.get(lastSpelledOutDigit).toString());
-        return result;
-    }
-
-    private String duplicateFirstCharOfLastSpelledOutDigit(String result, String lastSpelledOutDigit, int indexOfLast) {
-        result = result.substring(0, indexOfLast) + lastSpelledOutDigit.substring(0, 1) +
-                result.substring(indexOfLast);
-        return result;
-    }
-
-    private boolean lastCharEqualsFirstChar(String first, String second) {
-        return first.endsWith(second.substring(0, 1));
+        return s;
     }
 
     private String findFirstDigit(String s) {
