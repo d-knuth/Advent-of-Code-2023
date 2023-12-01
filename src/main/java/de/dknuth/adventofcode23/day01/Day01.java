@@ -27,19 +27,19 @@ public class Day01 implements Day {
     @Override
     public String solutionToPart1() {
         return input.stream()
-                .map(s -> findFirstDigit(s) + findLastDigit(s))
+                .map(s -> numberMadeOfFirstAndLastDigits(s))
                 .map(Integer::parseInt)
-                .reduce(0, (a, b) -> a + b)
+                .reduce(0, Integer::sum)
                 .toString();
     }
 
     @Override
     public String solutionToPart2() {
         return input.stream()
-                .map(this::replaceSpelledOutDigits)
-                .map(s -> findFirstDigit(s) + findLastDigit(s))
+                .map(s -> replaceSpelledOutDigits(s))
+                .map(s -> numberMadeOfFirstAndLastDigits(s))
                 .map(Integer::parseInt)
-                .reduce(0, (a, b) -> a + b)
+                .reduce(0, Integer::sum)
                 .toString();
     }
 
@@ -50,12 +50,19 @@ public class Day01 implements Day {
         return s;
     }
 
-    private String findFirstDigit(String s) {
-        char character = (char) s.chars().filter(c -> Character.isDigit((char) c)).findFirst().getAsInt();
+    private String numberMadeOfFirstAndLastDigits(String s) {
+        return firstDigitOf(s) + lastDigitOf(s);
+    }
+
+    private String firstDigitOf(String s) {
+        char character = (char) s.chars()
+                .filter(c -> Character.isDigit((char) c))
+                .findFirst()
+                .getAsInt();
         return String.valueOf(character);
     }
 
-    private String findLastDigit(String s) {
-        return findFirstDigit(new StringBuilder(s).reverse().toString());
+    private String lastDigitOf(String s) {
+        return firstDigitOf(new StringBuilder(s).reverse().toString());
     }
 }
