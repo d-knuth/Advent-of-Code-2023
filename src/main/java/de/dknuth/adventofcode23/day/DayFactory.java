@@ -45,7 +45,7 @@ public class DayFactory {
     }
 
     private static String classNameOf(int dayNumber) {
-        String number = dayNumber < 10 ? "0" + dayNumber : String.valueOf(dayNumber);
+        String number = String.format("%02d", dayNumber);
         return DayFactory.class.getPackageName() + number + ".Day" + number;
     }
 }

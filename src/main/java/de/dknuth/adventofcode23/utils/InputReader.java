@@ -13,7 +13,7 @@ public class InputReader {
 
     private static final String PATH_TO_INPUTS = "./src/main/resources/inputs/";
 
-    public static List<String> readInput(String fileName) {
+    public static List<String> read(String fileName) {
         try {
             return Files.readAllLines(Path.of(PATH_TO_INPUTS, fileName));
         } catch (IOException e) {
@@ -22,4 +22,7 @@ public class InputReader {
         }
     }
 
+    public static List<String> read(int dayNumber) {
+        return read("inputDay" + String.format("%02d", dayNumber) + ".txt");
+    }
 }

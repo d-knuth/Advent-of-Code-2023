@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.dknuth.adventofcode23.day.Day;
-import de.dknuth.adventofcode23.utils.InputReader;
 
 public class Day01 implements Day {
-    private static final List<String> input = InputReader.readInput("inputDay01.txt");
 
     private static final Map<String, String> STRING_TO_DIGIT = Map.ofEntries(
             entry("zero", "z0ro"),
@@ -25,7 +23,7 @@ public class Day01 implements Day {
             entry("nine", "n9ne"));
 
     @Override
-    public String solutionToPart1() {
+    public String solutionToPart1(List<String> input) {
         return input.stream()
                 .map(s -> numberMadeOfFirstAndLastDigits(s))
                 .map(Integer::parseInt)
@@ -34,7 +32,7 @@ public class Day01 implements Day {
     }
 
     @Override
-    public String solutionToPart2() {
+    public String solutionToPart2(List<String> input) {
         return input.stream()
                 .map(s -> replaceSpelledOutDigits(s))
                 .map(s -> numberMadeOfFirstAndLastDigits(s))

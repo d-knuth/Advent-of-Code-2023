@@ -1,6 +1,7 @@
 package de.dknuth.adventofcode23;
 
 import de.dknuth.adventofcode23.day.DayFactory;
+import de.dknuth.adventofcode23.utils.InputReader;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,11 +31,10 @@ public class Main {
     }
 
     private static String solutionToPart1(int dayNumber) {
-        return DayFactory.create(dayNumber).solutionToPart1();
+        return DayFactory.create(dayNumber).solutionToPart1(InputReader.read(dayNumber));
     }
 
     private static String solutionToPart2(int dayNumber) {
-        return DayFactory.create(dayNumber).solutionToPart2();
+        return DayFactory.create(dayNumber).solutionToPart2(InputReader.read(dayNumber));
     }
-
 }
