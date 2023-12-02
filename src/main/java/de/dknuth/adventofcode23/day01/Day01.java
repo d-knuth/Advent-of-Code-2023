@@ -23,8 +23,8 @@ public class Day01 implements Day {
             entry("nine", "n9ne"));
 
     @Override
-    public String solutionToPart1(List<String> input) {
-        return input.stream()
+    public String solutionToPart1(List<String> imputs) {
+        return imputs.stream()
                 .map(s -> numberMadeOfFirstAndLastDigits(s))
                 .map(Integer::parseInt)
                 .reduce(0, Integer::sum)
@@ -32,8 +32,8 @@ public class Day01 implements Day {
     }
 
     @Override
-    public String solutionToPart2(List<String> input) {
-        return input.stream()
+    public String solutionToPart2(List<String> inputs) {
+        return inputs.stream()
                 .map(s -> replaceSpelledOutDigits(s))
                 .map(s -> numberMadeOfFirstAndLastDigits(s))
                 .map(Integer::parseInt)
