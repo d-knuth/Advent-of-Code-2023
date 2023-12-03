@@ -54,9 +54,9 @@ public class Game {
     }
 
     private boolean isImpossibleCubeSet(Map<String, Integer> cubeSet, int maxRed, int maxGreen, int maxBlue) {
-        return (cubeSet.get("red") != null && cubeSet.get("red") > maxRed)
-                || (cubeSet.get("green") != null && cubeSet.get("green") > maxGreen)
-                || (cubeSet.get("blue") != null && cubeSet.get("blue") > maxBlue);
+        return (cubeSet.containsKey("red") && cubeSet.get("red") > maxRed)
+                || (cubeSet.containsKey("green") && cubeSet.get("green") > maxGreen)
+                || (cubeSet.containsKey("blue") && cubeSet.get("blue") > maxBlue);
     }
 
     Integer powerOfFewestNumberForPossibleGame() {
@@ -66,7 +66,7 @@ public class Game {
     private int maxOfColor(String color) {
         int maxColor = 0;
         for (Map<String, Integer> cubeSet : this.cubeSets) {
-            if (cubeSet.get(color) != null && cubeSet.get(color) > maxColor) {
+            if (cubeSet.containsKey(color) && cubeSet.get(color) > maxColor) {
                 maxColor = cubeSet.get(color);
             }
         }
