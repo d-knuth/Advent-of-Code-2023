@@ -21,8 +21,7 @@ public class Game {
     }
 
     private Integer gameNumber(String input) {
-        String number = input.substring(5, input.indexOf(":"));
-        return Integer.parseInt(number);
+        return numberOutOf(input.substring(5, input.indexOf(":")));
     }
 
     private List<Map<String, Integer>> mapListOf(String input) {
@@ -35,7 +34,7 @@ public class Game {
             for (String numberWithColor : numbersWithColors) {
                 for (String color : colors) {
                     if (numberWithColor.contains(color)) {
-                        cubeSetMap.put(color, extractNumber(numberWithColor, color));
+                        cubeSetMap.put(color, numberOutOf(numberWithColor));
                     }
                 }
             }
@@ -44,8 +43,8 @@ public class Game {
         return mapListOfCubeSets;
     }
 
-    private Integer extractNumber(String numberWithColor, String color) {
-        return Integer.parseInt(numberWithColor.replace(color, "").trim());
+    private Integer numberOutOf(String input) {
+        return Integer.parseInt(input.replaceAll("\\D", ""));
     }
 
     boolean isGamePossible(int maxRed, int maxGreen, int maxBlue) {
