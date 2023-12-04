@@ -9,13 +9,13 @@ public class Day03 implements Day {
     @Override
     public String solutionToPart1(List<String> inputs) {
         EngineSchematic engineSchematic = new EngineSchematic(inputs);
-        return engineSchematic.sumOfPartnumbers().toString();
+        return engineSchematic.listRequestedNumbers(1).stream().reduce(0, Integer::sum).toString();
     }
 
     @Override
     public String solutionToPart2(List<String> inputs) {
         EngineSchematic engineSchematic = new EngineSchematic(inputs);
-        return engineSchematic.gearRatios().stream().reduce(0, Integer::sum).toString();
+        return engineSchematic.listRequestedNumbers(2).stream().reduce(0, Integer::sum).toString();
     }
 
 }
