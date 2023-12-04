@@ -12,7 +12,7 @@ public class Card {
     Card(String input) {
         this.id = cardId(input);
         this.winningNumbers = winningNumbersOutOf(input);
-        this.numbersYouHave = numbersYouHave(input);
+        this.numbersYouHave = numbersYouHaveOutOf(input);
     }
 
     public int getId() {
@@ -39,7 +39,7 @@ public class Card {
         return numbersOutOf(input, 0);
     }
 
-    private List<String> numbersYouHave(String input) {
+    private List<String> numbersYouHaveOutOf(String input) {
         return numbersOutOf(input, 1);
     }
 
