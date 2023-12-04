@@ -19,6 +19,11 @@ class Day03Test {
 
     @Test
     void testSolutionToPart2() {
-
+        Day03 day = new Day03();
+        List<String> testInputs = Arrays.asList(
+                "467..114..", "...*......", "..35..633.", "......#...", "617*......", ".....+.58.", "..592.....",
+                "......755.", "...$.*....", ".664.598..");
+        String expectedOutput = "467835";
+        Assertions.assertEquals(expectedOutput, day.solutionToPart2(testInputs));
     }
 }
