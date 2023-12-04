@@ -5,12 +5,18 @@ import java.util.List;
 
 public class Card {
 
+    private int id;
     private List<String> winningNumbers;
     private List<String> numbersYouHave;
 
     Card(String input) {
+        this.id = cardId(input);
         this.winningNumbers = winningNumbersOutOf(input);
         this.numbersYouHave = numbersYouHave(input);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public List<String> getWinningNumbers() {
@@ -19,6 +25,14 @@ public class Card {
 
     public List<String> getNumbersYouHave() {
         return numbersYouHave;
+    }
+
+    private Integer cardId(String input) {
+        return numberOutOf(input.substring(5, input.indexOf(":")));
+    }
+
+    private Integer numberOutOf(String input) {
+        return Integer.parseInt(input.replaceAll("\\D", ""));
     }
 
     private List<String> winningNumbersOutOf(String input) {
@@ -39,8 +53,11 @@ public class Card {
     }
 
     Integer calcPoints() {
-        int winnningNumbersCount = (int) numbersYouHave.stream().filter(n -> winningNumbers.contains(n)).count();
-        return (int) Math.signum(winnningNumbersCount) * (int) Math.pow(2, winnningNumbersCount - 1.0);
+        return (int) Math.signum(winningNumbersCount()) * (int) Math.pow(2, winningNumbersCount() - 1.0);
+    }
+
+    int winningNumbersCount() {
+        return (int) numbersYouHave.stream().filter(n -> winningNumbers.contains(n)).count();
     }
 
 }
