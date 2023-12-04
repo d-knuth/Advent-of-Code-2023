@@ -27,11 +27,11 @@ public class Card {
         return numbersYouHave;
     }
 
-    private Integer cardId(String input) {
+    private int cardId(String input) {
         return numberOutOf(input.substring(5, input.indexOf(":")));
     }
 
-    private Integer numberOutOf(String input) {
+    private int numberOutOf(String input) {
         return Integer.parseInt(input.replaceAll("\\D", ""));
     }
 
@@ -52,7 +52,7 @@ public class Card {
                 .split(" "));
     }
 
-    Integer calcPoints() {
+    int calcPoints() {
         return (int) Math.signum(winningNumbersCount()) * (int) Math.pow(2, winningNumbersCount() - 1.0);
     }
 

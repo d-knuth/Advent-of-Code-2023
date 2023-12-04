@@ -20,7 +20,7 @@ public class Game {
         return id;
     }
 
-    private Integer gameNumber(String input) {
+    private int gameNumber(String input) {
         return numberOutOf(input.substring(5, input.indexOf(":")));
     }
 
@@ -43,7 +43,7 @@ public class Game {
         return mapListOfCubeSets;
     }
 
-    private Integer numberOutOf(String input) {
+    private int numberOutOf(String input) {
         return Integer.parseInt(input.replaceAll("\\D", ""));
     }
 
@@ -59,7 +59,7 @@ public class Game {
                 || (cubeSet.containsKey("blue") && cubeSet.get("blue") > maxBlue);
     }
 
-    Integer powerOfFewestNumberForPossibleGame() {
+    int powerOfFewestNumberForPossibleGame() {
         return maxOfColor("red") * maxOfColor("green") * maxOfColor("blue");
     }
 
