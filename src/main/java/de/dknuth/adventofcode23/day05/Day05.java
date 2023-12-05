@@ -13,9 +13,6 @@ public class Day05 implements Day {
     @Override
     public String solutionToPart1(List<String> inputs) {
         List<Long> seeds = getSeeds(inputs);
-        for (int i = 0; i < seeds.size(); i += 2) {
-            System.out.println(seeds.get(i) + seeds.get(i + 1));
-        }
         Almanac almanac = new Almanac(inputs);
         return seeds.stream()
                 .map(almanac::seedToLocation)
