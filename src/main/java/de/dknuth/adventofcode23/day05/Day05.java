@@ -22,9 +22,9 @@ public class Day05 implements Day {
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        List<List<Long>> seedsWitchRange = getSeedsWithRange(inputs);
+        List<List<Long>> seedsWithRange = getSeedsWithRange(inputs);
         Almanac almanac = new Almanac(inputs);
-        return seedsWitchRange.stream()
+        return seedsWithRange.stream()
                 .flatMap(this::subSeedStream)
                 .map(almanac::seedToLocation)
                 .min(Comparator.naturalOrder())
