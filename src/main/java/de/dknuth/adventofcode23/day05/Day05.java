@@ -10,10 +10,11 @@ public class Day05 implements Day {
 
     @Override
     public String solutionToPart1(List<String> inputs) {
-        List<Long> seeds = getSeeds(inputs);
+        List<String> seeds = getSeeds(inputs);
         Almanac almanac = new Almanac(inputs);
         return seeds.stream()
                 .map(almanac::seedToLocation)
+                .map(Long::parseLong)
                 .min(Comparator.naturalOrder())
                 .orElse(0l).toString();
     }
@@ -23,13 +24,12 @@ public class Day05 implements Day {
         return "";
     }
 
-    private List<Long> getSeeds(List<String> inputs) {
+    private List<String> getSeeds(List<String> inputs) {
         String seedString = inputs.get(0);
         return Arrays.asList(seedString
                 .substring(seedString.indexOf(":") + 1).trim()
                 .replace("  ", " ")
-                .split(" ")).stream()
-                .map(Long::parseLong).toList();
+                .split(" "));
     }
 
 }
