@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import de.dknuth.adventofcode23.utils.InputReader;
 
-public class Day05Test {
+class Day05Test {
     @Test
     void testSolutionToPart1() {
         Day05 day = new Day05();
@@ -18,6 +18,9 @@ public class Day05Test {
 
     @Test
     void testSolutionToPart2() {
-
+        Day05 day = new Day05();
+        List<String> testInputs = InputReader.read("inputDay05test.txt");
+        String expectedOutput = "46";
+        Assertions.assertEquals(expectedOutput, day.solutionToPart2(testInputs));
     }
 }

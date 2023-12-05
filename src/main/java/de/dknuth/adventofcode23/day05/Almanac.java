@@ -1,9 +1,8 @@
 package de.dknuth.adventofcode23.day05;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public class Almanac {
@@ -12,85 +11,44 @@ public class Almanac {
             "seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water", "water-to-light", "light-to-temperature",
             "temperature-to-humidity", "humidity-to-location");
 
-    private Map<String, String> seedToSoil = new HashMap<>();
-    private Map<String, String> soilToFertilizer = new HashMap<>();
-    private Map<String, String> fertilizerToWater = new HashMap<>();
-    private Map<String, String> waterToLight = new HashMap<>();
-    private Map<String, String> lightToTemperature = new HashMap<>();
-    private Map<String, String> temperatureToHumidity = new HashMap<>();
-    private Map<String, String> humidityToLocation = new HashMap<>();
-    private final List<Map<String, String>> MAPS = Arrays.asList(seedToSoil, soilToFertilizer, fertilizerToWater,
+    private AlmanacMap seedToSoil = new AlmanacMap();
+    private AlmanacMap soilToFertilizer = new AlmanacMap();
+    private AlmanacMap fertilizerToWater = new AlmanacMap();
+    private AlmanacMap waterToLight = new AlmanacMap();
+    private AlmanacMap lightToTemperature = new AlmanacMap();
+    private AlmanacMap temperatureToHumidity = new AlmanacMap();
+    private AlmanacMap humidityToLocation = new AlmanacMap();
+    private final List<AlmanacMap> MAPS = Arrays.asList(seedToSoil, soilToFertilizer, fertilizerToWater,
             waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation);
 
     public Almanac(List<String> inputs) {
         for (int i = 0; i < MAP_NAMES.size(); i++) {
-            MAPS.get(i).putAll(generateMap(MAP_NAMES.get(i), inputs));
+            List<String> input = generateAlmanacMapInput(MAP_NAMES.get(i), inputs);
+            MAPS.get(i).init(input);
         }
     }
 
-    private Map<String, String> generateMap(String name, List<String> input) {
-        Map<String, String> map = new HashMap<>();
+    private List<String> generateAlmanacMapInput(String name, List<String> input) {
+        List<String> result = new ArrayList<>();
         for (int i = indexOfMapName(name, input) + 1; i < input.size() && !input.get(i).isBlank(); i++) {
-            List<Long> destinationSourceRange = destinationSourceRange(input.get(i));
-            for (long j = 0; j < destinationSourceRange.get(2); j++) {
-                map.put(String.valueOf(destinationSourceRange.get(1) + j).intern(),
-                        String.valueOf(destinationSourceRange.get(0) + j).intern());
-            }
+            result.add(input.get(i));
         }
-        return map;
+        return result;
     }
 
     private int indexOfMapName(String name, List<String> input) {
         return input.indexOf(name + " map:");
     }
 
-    private List<Long> destinationSourceRange(String input) {
-        return Arrays.asList(input.replace("  ", " ")
-                .split(" ")).stream()
-                .map(Long::parseLong).toList();
-    }
-
-    public String seedToLocation(String source) {
+    public long seedToLocation(long source) {
         return Stream.of(source)
-                .map(this::seedToSoil)
-                .map(this::soilToFertilizer)
-                .map(this::fertilizerToWater)
-                .map(this::waterToLight)
-                .map(this::lightToTemperature)
-                .map(this::temperatureToHumidity)
-                .map(this::humidityToLocation)
-                .findFirst().orElse("");
-    }
-
-    private String seedToSoil(String source) {
-        return getDestination(seedToSoil, source);
-    }
-
-    private String soilToFertilizer(String source) {
-        return getDestination(soilToFertilizer, source);
-    }
-
-    private String fertilizerToWater(String source) {
-        return getDestination(fertilizerToWater, source);
-    }
-
-    private String waterToLight(String source) {
-        return getDestination(waterToLight, source);
-    }
-
-    private String lightToTemperature(String source) {
-        return getDestination(lightToTemperature, source);
-    }
-
-    private String temperatureToHumidity(String source) {
-        return getDestination(temperatureToHumidity, source);
-    }
-
-    private String humidityToLocation(String source) {
-        return getDestination(humidityToLocation, source);
-    }
-
-    private String getDestination(Map<String, String> map, String source) {
-        return map.containsKey(source) ? map.get(source) : source;
+                .map(this.seedToSoil::get)
+                .map(this.soilToFertilizer::get)
+                .map(this.fertilizerToWater::get)
+                .map(this.waterToLight::get)
+                .map(this.lightToTemperature::get)
+                .map(this.temperatureToHumidity::get)
+                .map(this.humidityToLocation::get)
+                .findFirst().orElse(-1l);
     }
 }
