@@ -1,5 +1,8 @@
 package de.dknuth.adventofcode23;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import de.dknuth.adventofcode23.day.DayFactory;
 import de.dknuth.adventofcode23.utils.InputReader;
 
@@ -12,7 +15,12 @@ public class Main {
 
     private static void printSolution(int dayNumber) {
         if (DayFactory.canCreate(dayNumber)) {
+            Instant start = Instant.now();
             System.out.println(solution(dayNumber));
+            Duration duration = Duration.between(start, Instant.now());
+            System.out.println(
+                    "Computation time: " + duration.toMinutes() + ":" + duration.toSeconds() % 60
+                            + " minutes.\n");
         } else {
             System.out.println(String.format("""
 

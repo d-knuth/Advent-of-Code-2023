@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.LongStream;
 
 import de.dknuth.adventofcode23.day.Day;
 
@@ -24,17 +24,17 @@ public class Day05 implements Day {
     public String solutionToPart2(List<String> inputs) {
         List<List<Long>> seedsWithRange = getSeedsWithRange(inputs);
         Almanac almanac = new Almanac(inputs);
-        return seedsWithRange.stream().parallel()
-                .flatMap(this::subSeedStream)
-                .map(almanac::seedToLocation)
-                .min(Comparator.naturalOrder())
-                .orElse(0l).toString();
+        return Long.toString(
+                seedsWithRange.stream().parallel()
+                        .flatMapToLong(this::subSeedStream)
+                        .map(almanac::seedToLocation)
+                        .min().orElse(0));
     }
 
-    private Stream<Long> subSeedStream(List<Long> seedWithRange) {
+    private LongStream subSeedStream(List<Long> seedWithRange) {
         long start = seedWithRange.get(0);
         long range = seedWithRange.get(1);
-        return Stream.iterate(start, s -> s + 1).limit(range);
+        return LongStream.range(start, start + range);
     }
 
     List<List<Long>> getSeedsWithRange(List<String> inputs) {
