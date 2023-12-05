@@ -5,7 +5,7 @@ import de.dknuth.adventofcode23.utils.InputReader;
 
 public class Main {
     public static void main(String[] args) {
-        int dayNumber = 4;
+        int dayNumber = 5;
         DayFactory.showSolvedDays();
         printSolution(dayNumber);
     }
