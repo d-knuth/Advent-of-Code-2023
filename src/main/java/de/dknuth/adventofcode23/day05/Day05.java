@@ -24,7 +24,7 @@ public class Day05 implements Day {
     public String solutionToPart2(List<String> inputs) {
         List<List<Long>> seedsWithRange = getSeedsWithRange(inputs);
         Almanac almanac = new Almanac(inputs);
-        return seedsWithRange.stream()
+        return seedsWithRange.stream().parallel()
                 .flatMap(this::subSeedStream)
                 .map(almanac::seedToLocation)
                 .min(Comparator.naturalOrder())
