@@ -9,18 +9,20 @@ public class Day07 implements Day {
 
     @Override
     public String solutionToPart1(List<String> inputs) {
-        List<Hand> sortedByRank = inputs.stream().map(this::createHand).sorted().toList();
-        long sum = LongStream.range(0, sortedByRank.size()).map(i -> (i + 1) * sortedByRank.get((int) i).getBid())
+        List<Hand> handsSortedByRank = inputs.stream().map(this::createHand).sorted().toList();
+        long sumOfRanksTimesBids = LongStream.range(0, handsSortedByRank.size())
+                .map(i -> (i + 1) * handsSortedByRank.get((int) i).getBid())
                 .sum();
-        return String.valueOf(sum);
+        return String.valueOf(sumOfRanksTimesBids);
     }
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        List<Hand> sortedByRank = inputs.stream().map(this::createHandWithJokers).sorted().toList();
-        long sum = LongStream.range(0, sortedByRank.size()).map(i -> (i + 1) * sortedByRank.get((int) i).getBid())
+        List<Hand> handsSortedByRank = inputs.stream().map(this::createHandWithJokers).sorted().toList();
+        long sumOfRanksTimesBids = LongStream.range(0, handsSortedByRank.size())
+                .map(i -> (i + 1) * handsSortedByRank.get((int) i).getBid())
                 .sum();
-        return String.valueOf(sum);
+        return String.valueOf(sumOfRanksTimesBids);
     }
 
     private Hand createHand(String input) {

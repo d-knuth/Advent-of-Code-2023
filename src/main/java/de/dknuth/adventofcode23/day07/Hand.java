@@ -77,9 +77,9 @@ public class Hand implements Comparable<Hand> {
             cardStrength = CARD_STRENGTH;
         }
 
-        if (this.getRankOfHand() > other.getRankOfHand()) {
+        if (this.rankOfHand() > other.rankOfHand()) {
             return 1;
-        } else if (this.getRankOfHand() < other.getRankOfHand()) {
+        } else if (this.rankOfHand() < other.rankOfHand()) {
             return -1;
         }
         for (int i = 0; i < this.cards.length(); i++) {
@@ -101,7 +101,7 @@ public class Hand implements Comparable<Hand> {
         return s.chars().boxed().map(c -> Character.toString((char) c.intValue())).toList();
     }
 
-    private int getRankOfHand() {
+    private int rankOfHand() {
         if (isFiveOfAKind()) {
             return 6;
         }
@@ -131,8 +131,7 @@ public class Hand implements Comparable<Hand> {
         if (withJokers) {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
-            return cardsCountCopy.values().contains(5l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount >= 5l;
+            return cardsCountCopy.values().contains(5l) || maxCount(cardsCountCopy) + jokerCount >= 5l;
         }
         return cardsCount.values().contains(5l);
     }
@@ -141,8 +140,7 @@ public class Hand implements Comparable<Hand> {
         if (withJokers) {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
-            return cardsCountCopy.values().contains(4l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount == 4l;
+            return cardsCountCopy.values().contains(4l) || maxCount(cardsCountCopy) + jokerCount == 4l;
         }
         return cardsCount.values().contains(4l);
     }
@@ -152,7 +150,7 @@ public class Hand implements Comparable<Hand> {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
             boolean isThreeOfAKind = cardsCountCopy.values().contains(3l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount == 3l;
+                    || maxCount(cardsCountCopy) + jokerCount == 3l;
             cardsCountCopy.remove(getMaxCountKey(cardsCountCopy));
             boolean isPair = cardsCountCopy.values().contains(2l);
             return isThreeOfAKind && isPair;
@@ -164,8 +162,7 @@ public class Hand implements Comparable<Hand> {
         if (withJokers) {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
-            return (cardsCountCopy.values().contains(3l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount == 3l)
+            return (cardsCountCopy.values().contains(3l) || maxCount(cardsCountCopy) + jokerCount == 3l)
                     && !isFullHouse();
         }
         return cardsCount.values().contains(3l) && !isFullHouse();
@@ -175,8 +172,7 @@ public class Hand implements Comparable<Hand> {
         if (withJokers) {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
-            boolean isPair = cardsCountCopy.values().contains(2l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount == 2l;
+            boolean isPair = cardsCountCopy.values().contains(2l) || maxCount(cardsCountCopy) + jokerCount == 2l;
             cardsCountCopy.remove(getMaxCountKey(cardsCountCopy));
             boolean isSecondPair = cardsCountCopy.values().contains(2l);
             return isPair && isSecondPair;
@@ -188,8 +184,7 @@ public class Hand implements Comparable<Hand> {
         if (withJokers) {
             Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
             cardsCountCopy.remove("J");
-            return (cardsCountCopy.values().contains(2l)
-                    || cardsCountCopy.values().stream().max(Comparator.naturalOrder()).orElse(0l) + jokerCount == 2l)
+            return (cardsCountCopy.values().contains(2l) || maxCount(cardsCountCopy) + jokerCount == 2l)
                     && !isTwoPairs();
         }
         return cardsCount.values().contains(2l) && !isTwoPairs();
