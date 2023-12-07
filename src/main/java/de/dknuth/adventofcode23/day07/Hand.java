@@ -12,56 +12,56 @@ import java.util.stream.Collectors;
 
 public class Hand implements Comparable<Hand> {
 
-    private static final Map<Character, Integer> CARD_STRENGTH = Map.ofEntries(
-            entry('2', 2),
-            entry('3', 3),
-            entry('4', 4),
-            entry('5', 5),
-            entry('6', 6),
-            entry('7', 7),
-            entry('8', 8),
-            entry('9', 9),
-            entry('T', 10),
-            entry('J', 11),
-            entry('Q', 12),
-            entry('K', 13),
-            entry('A', 14));
-
-    private static final Map<Character, Integer> CARD_STRENGTH_WITH_JOKERS = Map.ofEntries(
-            entry('2', 2),
-            entry('3', 3),
-            entry('4', 4),
-            entry('5', 5),
-            entry('6', 6),
-            entry('7', 7),
-            entry('8', 8),
-            entry('9', 9),
-            entry('T', 10),
-            entry('J', 1),
-            entry('Q', 12),
-            entry('K', 13),
-            entry('A', 14));
-
     private String cards;
     private long bid;
-    private boolean withJokers = false;
+    private boolean withJokers;
     private long jokerCount;
-
     private Map<String, Long> cardsCount;
+    private Map<Character, Integer> cardStrengths;
 
     public Hand(String cards, long bid) {
-        this.cards = cards;
-        this.bid = bid;
-        this.cardsCount = countCards();
-        this.jokerCount = jokerCount();
+        this(cards, bid, false);
     }
 
     public Hand(String cards, long bid, boolean withJokers) {
+        this.withJokers = withJokers;
         this.cards = cards;
         this.bid = bid;
         this.cardsCount = countCards();
         this.jokerCount = jokerCount();
-        this.withJokers = withJokers;
+
+        if (withJokers) {
+            this.cardsCount.remove("J");
+            this.cardStrengths = Map.ofEntries(
+                    entry('2', 2),
+                    entry('3', 3),
+                    entry('4', 4),
+                    entry('5', 5),
+                    entry('6', 6),
+                    entry('7', 7),
+                    entry('8', 8),
+                    entry('9', 9),
+                    entry('T', 10),
+                    entry('J', 1),
+                    entry('Q', 12),
+                    entry('K', 13),
+                    entry('A', 14));
+        } else {
+            this.cardStrengths = Map.ofEntries(
+                    entry('2', 2),
+                    entry('3', 3),
+                    entry('4', 4),
+                    entry('5', 5),
+                    entry('6', 6),
+                    entry('7', 7),
+                    entry('8', 8),
+                    entry('9', 9),
+                    entry('T', 10),
+                    entry('J', 11),
+                    entry('Q', 12),
+                    entry('K', 13),
+                    entry('A', 14));
+        }
     }
 
     public long getBid() {
@@ -70,22 +70,15 @@ public class Hand implements Comparable<Hand> {
 
     @Override
     public int compareTo(Hand other) {
-        Map<Character, Integer> cardStrength;
-        if (withJokers) {
-            cardStrength = CARD_STRENGTH_WITH_JOKERS;
-        } else {
-            cardStrength = CARD_STRENGTH;
-        }
-
         if (this.rankOfHand() > other.rankOfHand()) {
             return 1;
         } else if (this.rankOfHand() < other.rankOfHand()) {
             return -1;
         }
         for (int i = 0; i < this.cards.length(); i++) {
-            if (cardStrength.get(cards.charAt(i)) > cardStrength.get(other.cards.charAt(i))) {
+            if (cardStrengths.get(cards.charAt(i)) > cardStrengths.get(other.cards.charAt(i))) {
                 return 1;
-            } else if (cardStrength.get(cards.charAt(i)) < cardStrength.get(other.cards.charAt(i))) {
+            } else if (cardStrengths.get(cards.charAt(i)) < cardStrengths.get(other.cards.charAt(i))) {
                 return -1;
             }
         }
@@ -124,79 +117,50 @@ public class Hand implements Comparable<Hand> {
     }
 
     private long jokerCount() {
-        return cardsCount.get("J") != null ? cardsCount.get("J") : 0;
+        return cardsCount.get("J") != null && withJokers ? cardsCount.get("J") : 0;
     }
 
     private boolean isFiveOfAKind() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            return cardsCountCopy.values().contains(5l) || maxCount(cardsCountCopy) + jokerCount >= 5l;
-        }
-        return cardsCount.values().contains(5l);
+        return maxCountInCards(cardsCount) + jokerCount >= 5l;
+
     }
 
     private boolean isFourOfAKind() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            return cardsCountCopy.values().contains(4l) || maxCount(cardsCountCopy) + jokerCount == 4l;
-        }
-        return cardsCount.values().contains(4l);
+        return maxCountInCards(cardsCount) + jokerCount == 4l;
     }
 
     private boolean isFullHouse() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            boolean isThreeOfAKind = cardsCountCopy.values().contains(3l)
-                    || maxCount(cardsCountCopy) + jokerCount == 3l;
-            cardsCountCopy.remove(getMaxCountKey(cardsCountCopy));
-            boolean isPair = cardsCountCopy.values().contains(2l);
-            return isThreeOfAKind && isPair;
-        }
-        return cardsCount.values().contains(3l) && cardsCount.values().contains(2l);
+        Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
+        boolean isThreeOfAKind = maxCountInCards(cardsCountCopy) + jokerCount == 3l;
+        cardsCountCopy.remove(getCardWithMaxCount(cardsCountCopy));
+        boolean isPair = cardsCountCopy.values().contains(2l);
+        return isThreeOfAKind && isPair;
     }
 
     private boolean isThreeOfAKind() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            return (cardsCountCopy.values().contains(3l) || maxCount(cardsCountCopy) + jokerCount == 3l)
-                    && !isFullHouse();
-        }
-        return cardsCount.values().contains(3l) && !isFullHouse();
+        return maxCountInCards(cardsCount) + jokerCount == 3l && !isFullHouse();
     }
 
     private boolean isTwoPairs() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            boolean isPair = cardsCountCopy.values().contains(2l) || maxCount(cardsCountCopy) + jokerCount == 2l;
-            cardsCountCopy.remove(getMaxCountKey(cardsCountCopy));
-            boolean isSecondPair = cardsCountCopy.values().contains(2l);
-            return isPair && isSecondPair;
-        }
-        return cardsCount.values().stream().filter(e -> e == 2l).count() == 2;
+        Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
+        boolean isPair = cardsCountCopy.values().contains(2l) || maxCountInCards(cardsCountCopy) + jokerCount == 2l;
+        cardsCountCopy.remove(getCardWithMaxCount(cardsCountCopy));
+        boolean isSecondPair = cardsCountCopy.values().contains(2l);
+        return isPair && isSecondPair;
+
     }
 
     private boolean isPair() {
-        if (withJokers) {
-            Map<String, Long> cardsCountCopy = new HashMap<>(cardsCount);
-            cardsCountCopy.remove("J");
-            return (cardsCountCopy.values().contains(2l) || maxCount(cardsCountCopy) + jokerCount == 2l)
-                    && !isTwoPairs();
-        }
-        return cardsCount.values().contains(2l) && !isTwoPairs();
+        return maxCountInCards(cardsCount) + jokerCount == 2l && !isTwoPairs();
     }
 
-    private String getMaxCountKey(Map<String, Long> map) {
-        long max = maxCount(map);
+    private String getCardWithMaxCount(Map<String, Long> map) {
+        long max = maxCountInCards(map);
         return map.entrySet().stream().filter(e -> e.getValue() == max).map(Entry::getKey).findFirst().orElse("");
     }
 
-    private long maxCount(Map<String, Long> map) {
-        return map.values().stream().max(Comparator.naturalOrder()).orElse(0l);
+    private long maxCountInCards(Map<String, Long> cardsCount) {
+        return cardsCount.values().stream().max(Comparator.naturalOrder()).orElse(0l);
     }
 
 }
