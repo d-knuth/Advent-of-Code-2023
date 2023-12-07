@@ -121,8 +121,7 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean isFiveOfAKind() {
-        return maxCountInCards(cardsCount) + jokerCount >= 5l;
-
+        return maxCountInCards(cardsCount) + jokerCount == 5l;
     }
 
     private boolean isFourOfAKind() {

@@ -26,13 +26,13 @@ public class Day07 implements Day {
     }
 
     private Hand createHand(String input) {
-        String hand = input.substring(0, 6);
+        String hand = input.substring(0, 6).trim();
         long bid = Long.parseLong(input.substring(6).trim());
         return new Hand(hand, bid);
     }
 
     private Hand createHandWithJokers(String input) {
-        String hand = input.substring(0, 6);
+        String hand = input.substring(0, 6).trim();
         long bid = Long.parseLong(input.substring(6).trim());
         return new Hand(hand, bid, true);
     }
