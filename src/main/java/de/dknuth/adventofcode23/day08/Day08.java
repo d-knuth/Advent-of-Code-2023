@@ -9,13 +9,14 @@ public class Day08 implements Day {
     @Override
     public String solutionToPart1(List<String> inputs) {
         List<Node> nodes = generateNodes(inputs);
+        fillNodeList(nodes);
         char[] directions = getDirections(inputs);
-        int i = 0;
+        long i = 0;
         boolean found = false;
         Node currentNode = nodes.get(0);
         while (!found) {
-            char direction = directions[i % directions.length];
-            currentNode = walk(currentNode, nodes, direction);
+            char direction = directions[(int) (i % directions.length)];
+            currentNode = currentNode.walk(direction);
             i++;
             if (currentNode.getName().equals("ZZZ")) {
                 found = true;
@@ -54,9 +55,29 @@ public class Day08 implements Day {
         return inputs.get(0).trim().toCharArray();
     }
 
-    private Node walk(Node origin, List<Node> nodes, char direction) {
-        String nextNodeName = direction == 'L' ? origin.getLeft() : origin.getRight();
-        return nodes.stream().parallel().filter(n -> n.getName().equals(nextNodeName)).findFirst().orElseThrow();
+    private List<Node> fillNodeList(List<Node> nodeList) {
+        for (int i = 0; i < nodeList.size(); i++) {
+            if (nodeList.get(i).getLeft() == null) {
+                String nextNodeName = nodeList.get(i).getLeftName();
+                Node nextNode = nodeList.stream().parallel().filter(n -> n.getName().equals(nextNodeName)).findFirst()
+                        .orElseThrow();
+                nodeList.get(i).setLeft(nextNode);
+            }
+            if (nodeList.get(i).getRight() == null) {
+                String nextNodeName = nodeList.get(i).getRightName();
+                Node nextNode = nodeList.stream().parallel().filter(n -> n.getName().equals(nextNodeName)).findFirst()
+                        .orElseThrow();
+                nodeList.get(i).setRight(nextNode);
+            }
+        }
+        return nodeList;
     }
+
+    // private Node walk(Node origin, List<Node> nodes, char direction) {
+    // String nextNodeName = direction == 'L' ? origin.getLeftName() :
+    // origin.getRightName();
+    // return nodes.stream().parallel().filter(n ->
+    // n.getName().equals(nextNodeName)).findFirst().orElseThrow();
+    // }
 
 }
