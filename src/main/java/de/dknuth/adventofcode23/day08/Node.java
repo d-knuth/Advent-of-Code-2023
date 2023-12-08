@@ -7,6 +7,7 @@ public class Node {
     private Node left;
     private Node right;
     private Node nextZ;
+    private Long stepsToNextZ;
 
     public Node getNextZ() {
         return nextZ;
@@ -15,8 +16,6 @@ public class Node {
     public void setNextZ(Node nextZ) {
         this.nextZ = nextZ;
     }
-
-    private Long stepsToNextZ;
 
     public Node getLeft() {
         return left;

@@ -1,6 +1,9 @@
 package de.dknuth.adventofcode23.day08;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.dknuth.adventofcode23.day.Day;
 
@@ -25,28 +28,30 @@ public class Day08 implements Day {
         return String.valueOf(i);
     }
 
-    // @Override
-    // public String solutionToPart2(List<String> inputs) {
-    // List<Node> nodes = generateNodes(inputs);
-    // char[] directions = getDirections(inputs);
-    // fillNodeList(nodes, directions);
-    // long i = 0;
-    // boolean found = false;
-    // List<Node> currentNodes = nodes.stream().filter(n ->
-    // n.getName().substring(2).equals("A")).toList();
-
-    // while (!found) {
-    // char direction = directions[(int) (i % directions.length)];
-    // currentNodes = currentNodes.stream().map(n -> n.walk(direction)).toList();
-    // i++;
-    // if (currentNodes.stream().filter(n ->
-    // n.getName().substring(2).equals("Z")).count() == currentNodes
-    // .size()) {
-    // found = true;
-    // }
-    // }
-    // return String.valueOf(i);
-    // }
+    @Override
+    public String solutionToPart2(List<String> inputs) {
+        List<Node> nodes = generateNodes(inputs);
+        char[] directions = getDirections(inputs);
+        fillNodeListWithNextZs(nodes, directions);
+        boolean found = false;
+        List<Node> currentNodes = nodes.stream().filter(n -> n.getName().substring(2).equals("A"))
+                .collect(Collectors.toCollection(ArrayList::new));
+        List<Long> currentSteps = currentNodes.stream().map(Node::getStepsToNextZ)
+                .collect(Collectors.toCollection(ArrayList::new));
+        currentNodes = currentNodes.stream().map(Node::getNextZ).toList();
+        while (!found) {
+            for (int j = 0; j < currentNodes.size(); j++) {
+                if (currentSteps.get(j) < currentSteps.stream().max(Comparator.naturalOrder()).orElseThrow()) {
+                    currentSteps.set(j, currentSteps.get(j) + currentNodes.get(j).getStepsToNextZ());
+                    currentNodes.get(j).getNextZ();
+                }
+            }
+            if (currentSteps.stream().distinct().count() == 1) {
+                found = true;
+            }
+        }
+        return String.valueOf(currentSteps.get(0));
+    }
 
     private List<Node> generateNodes(List<String> inputs) {
         return inputs.stream().skip(2).map(this::generateNode).toList();
@@ -90,14 +95,20 @@ public class Day08 implements Day {
         return nodeList;
     }
 
-    private List<Node> fillNodeList(List<Node> nodeList, char[] directions) {
+    private List<Node> fillNodeListWithNextZs(List<Node> nodeList, char[] directions) {
         this.fillNodeList(nodeList);
         List<Node> aNodes = nodeList.stream().filter(n -> n.getName().substring(2).equals("A")).toList();
         List<Node> zNodes = nodeList.stream().filter(n -> n.getName().substring(2).equals("Z")).toList();
-        for (int i = 0; i < aNodes.size(); i++) {
+        fillInNextZs(aNodes, directions);
+        fillInNextZs(zNodes, directions);
+        return nodeList;
+    }
+
+    private List<Node> fillInNextZs(List<Node> nodeList, char[] directions) {
+        for (int i = 0; i < nodeList.size(); i++) {
             long j = 0;
             boolean found = false;
-            Node currentNode = aNodes.get(i);
+            Node currentNode = nodeList.get(i);
             while (!found) {
                 char direction = directions[(int) (j % directions.length)];
                 currentNode = currentNode.walk(direction);
@@ -106,23 +117,8 @@ public class Day08 implements Day {
                     found = true;
                 }
             }
-            aNodes.get(i).setStepsToNextZ(j);
-            aNodes.get(i).setNextZ(currentNode);
-        }
-        for (int i = 0; i < aNodes.size(); i++) {
-            long j = 0;
-            boolean found = false;
-            Node currentNode = zNodes.get(i);
-            while (!found) {
-                char direction = directions[(int) (j % directions.length)];
-                currentNode = currentNode.walk(direction);
-                j++;
-                if (currentNode.getName().substring(2).equals("Z")) {
-                    found = true;
-                }
-            }
-            zNodes.get(i).setStepsToNextZ(j);
-            zNodes.get(i).setNextZ(currentNode);
+            nodeList.get(i).setStepsToNextZ(j);
+            nodeList.get(i).setNextZ(currentNode);
         }
         return nodeList;
     }
