@@ -13,7 +13,7 @@ public class Day08 implements Day {
         char[] directions = getDirections(inputs);
         long i = 0;
         boolean found = false;
-        Node currentNode = nodes.get(0);
+        Node currentNode = nodes.stream().filter(n -> n.getName().equals("AAA")).findFirst().orElseThrow();
         while (!found) {
             char direction = directions[(int) (i % directions.length)];
             currentNode = currentNode.walk(direction);
@@ -22,32 +22,49 @@ public class Day08 implements Day {
                 found = true;
             }
         }
-
         return String.valueOf(i);
     }
 
-    @Override
-    public String solutionToPart2(List<String> inputs) {
-        return "";
-    }
+    // @Override
+    // public String solutionToPart2(List<String> inputs) {
+    // List<Node> nodes = generateNodes(inputs);
+    // char[] directions = getDirections(inputs);
+    // fillNodeList(nodes, directions);
+    // long i = 0;
+    // boolean found = false;
+    // List<Node> currentNodes = nodes.stream().filter(n ->
+    // n.getName().substring(2).equals("A")).toList();
+
+    // while (!found) {
+    // char direction = directions[(int) (i % directions.length)];
+    // currentNodes = currentNodes.stream().map(n -> n.walk(direction)).toList();
+    // i++;
+    // if (currentNodes.stream().filter(n ->
+    // n.getName().substring(2).equals("Z")).count() == currentNodes
+    // .size()) {
+    // found = true;
+    // }
+    // }
+    // return String.valueOf(i);
+    // }
 
     private List<Node> generateNodes(List<String> inputs) {
         return inputs.stream().skip(2).map(this::generateNode).toList();
     }
 
     private Node generateNode(String input) {
-        return new Node(getName(input), getLeft(input), getRight(input));
+        return new Node(getName(input), getLeftName(input), getRightName(input));
     }
 
     private String getName(String input) {
         return input.substring(0, 4).trim();
     }
 
-    private String getLeft(String input) {
+    private String getLeftName(String input) {
         return input.substring(7, 10).trim();
     }
 
-    private String getRight(String input) {
+    private String getRightName(String input) {
         return input.substring(12, 15).trim();
     }
 
@@ -73,11 +90,40 @@ public class Day08 implements Day {
         return nodeList;
     }
 
-    // private Node walk(Node origin, List<Node> nodes, char direction) {
-    // String nextNodeName = direction == 'L' ? origin.getLeftName() :
-    // origin.getRightName();
-    // return nodes.stream().parallel().filter(n ->
-    // n.getName().equals(nextNodeName)).findFirst().orElseThrow();
-    // }
-
+    private List<Node> fillNodeList(List<Node> nodeList, char[] directions) {
+        this.fillNodeList(nodeList);
+        List<Node> aNodes = nodeList.stream().filter(n -> n.getName().substring(2).equals("A")).toList();
+        List<Node> zNodes = nodeList.stream().filter(n -> n.getName().substring(2).equals("Z")).toList();
+        for (int i = 0; i < aNodes.size(); i++) {
+            long j = 0;
+            boolean found = false;
+            Node currentNode = aNodes.get(i);
+            while (!found) {
+                char direction = directions[(int) (j % directions.length)];
+                currentNode = currentNode.walk(direction);
+                j++;
+                if (currentNode.getName().substring(2).equals("Z")) {
+                    found = true;
+                }
+            }
+            aNodes.get(i).setStepsToNextZ(j);
+            aNodes.get(i).setNextZ(currentNode);
+        }
+        for (int i = 0; i < aNodes.size(); i++) {
+            long j = 0;
+            boolean found = false;
+            Node currentNode = zNodes.get(i);
+            while (!found) {
+                char direction = directions[(int) (j % directions.length)];
+                currentNode = currentNode.walk(direction);
+                j++;
+                if (currentNode.getName().substring(2).equals("Z")) {
+                    found = true;
+                }
+            }
+            zNodes.get(i).setStepsToNextZ(j);
+            zNodes.get(i).setNextZ(currentNode);
+        }
+        return nodeList;
+    }
 }

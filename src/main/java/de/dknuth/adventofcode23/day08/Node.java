@@ -6,6 +6,17 @@ public class Node {
     private String rightName;
     private Node left;
     private Node right;
+    private Node nextZ;
+
+    public Node getNextZ() {
+        return nextZ;
+    }
+
+    public void setNextZ(Node nextZ) {
+        this.nextZ = nextZ;
+    }
+
+    private Long stepsToNextZ;
 
     public Node getLeft() {
         return left;
@@ -44,4 +55,14 @@ public class Node {
     public Node walk(char direction) {
         return direction == 'L' ? getLeft() : getRight();
     }
+
+    public long getStepsToNextZ() {
+        return stepsToNextZ;
+
+    }
+
+    public void setStepsToNextZ(long stepsToNextZ) {
+        this.stepsToNextZ = stepsToNextZ;
+    }
+
 }
