@@ -21,16 +21,25 @@ public class Universe {
         }
     }
 
-    private List<int[]> findAllGalaxies() {
-        List<int[]> galaxies = new ArrayList<>();
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j] == '#') {
-                    galaxies.add(new int[] { i, j });
-                }
+    private List<Long> expandableRows(List<String> inputs) {
+        List<Long> rows = new ArrayList<>();
+        for (int i = 0; i < inputs.size(); i++) {
+            if (inputs.get(i).chars().distinct().count() == 1) {
+                rows.add((long) i);
             }
         }
-        return galaxies;
+        return rows;
+    }
+
+    private List<Long> expandableColumns(List<String> inputs) {
+        List<Long> columns = new ArrayList<>();
+        for (int index = 0; index < inputs.get(0).length(); index++) {
+            int i = index;
+            if (inputs.stream().map(s -> s.charAt(i)).distinct().count() == 1) {
+                columns.add((long) i);
+            }
+        }
+        return columns;
     }
 
     long calcDistanceSum(long expansionFactor) {
@@ -42,6 +51,18 @@ public class Universe {
             }
         }
         return totalDistances;
+    }
+
+    private List<int[]> findAllGalaxies() {
+        List<int[]> galaxies = new ArrayList<>();
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[i].length; j++) {
+                if (image[i][j] == '#') {
+                    galaxies.add(new int[] { i, j });
+                }
+            }
+        }
+        return galaxies;
     }
 
     private long calcDistanceBetweenGalaxies(int[] g1, int[] g2, long expansionFactor) {
@@ -63,27 +84,4 @@ public class Universe {
         }
         return expansionDistance + Math.abs(g1[0] - g2[0]) + Math.abs(g1[1] - g2[1]);
     }
-
-    List<Long> expandableRows(List<String> inputs) {
-        List<Long> rows = new ArrayList<>();
-        for (int i = 0; i < inputs.size(); i++) {
-            if (inputs.get(i).chars().distinct().count() == 1) {
-                rows.add((long) i);
-            }
-        }
-        return rows;
-    }
-
-    List<Long> expandableColumns(List<String> inputs) {
-        List<Long> columns = new ArrayList<>();
-        for (int index = 0; index < inputs.get(0).length(); index++) {
-            int i = index;
-            if (inputs.stream().map(s -> s.charAt(i)).distinct().count() == 1) {
-                columns.add((long) i);
-
-            }
-        }
-        return columns;
-    }
-
 }
