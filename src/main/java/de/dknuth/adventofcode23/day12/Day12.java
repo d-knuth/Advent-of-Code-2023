@@ -15,7 +15,9 @@ public class Day12 implements Day {
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        return "";
+        return String.valueOf(inputs.stream().map(ConditionRecord::new).map(c -> c.unfold())
+                .map(c -> c.countMatches(c.getSprings(), c.getDamagedSpringsPattern()))
+                .reduce(0l, Long::sum));
     }
 
 }

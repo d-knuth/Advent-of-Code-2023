@@ -23,6 +23,15 @@ class Day12Test {
 
     @Test
     void testSolutionToPart2() {
-
+        Day12 day = new Day12();
+        List<String> testInputs = Arrays.asList(
+                "???.### 1,1,3",
+                ".??..??...?##. 1,1,3",
+                "?#?#?#?#?#?#?#? 1,3,1,6",
+                "????.#...#... 4,1,1",
+                "????.######..#####. 1,6,5",
+                "?###???????? 3,2,1");
+        String expectedOutput = "525152";
+        Assertions.assertEquals(expectedOutput, day.solutionToPart2(testInputs));
     }
 }
