@@ -1,9 +1,10 @@
 package de.dknuth.adventofcode23.day10;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 
 public class PipeMaze {
     private char[][] pipeMatrix;
@@ -17,7 +18,22 @@ public class PipeMaze {
         }
     }
 
-    int[] findStart() {
+    List<int[]> getAllPipesOfLoop() {
+        List<int[]> allPipesOfLoop = new ArrayList<>();
+        int[] start = findStart();
+        int[] current = findPipeFromStart();
+        allPipesOfLoop.add(current);
+        int[] previous = start;
+        while (!Arrays.equals(current, start)) {
+            int[] next = walk(previous, current);
+            allPipesOfLoop.add(current);
+            previous = current;
+            current = next;
+        }
+        return allPipesOfLoop;
+    }
+
+    private int[] findStart() {
         int i = 0;
         int j = 0;
         for (i = 0; i < pipeMatrix.length; i++) {
@@ -30,31 +46,22 @@ public class PipeMaze {
         return new int[] { 0, 0 };
     }
 
-    private int[] findPipesFromStart(boolean findFirst) {
+    private int[] findPipeFromStart() {
         int[] start = findStart();
         char up = start[0] - 1 < 0 ? '.' : pipeMatrix[start[0] - 1][start[1]];
         char down = start[0] + 1 >= pipeMatrix.length ? '.' : pipeMatrix[start[0] + 1][start[1]];
         char left = start[1] - 1 < 0 ? '.' : pipeMatrix[start[0]][start[1] - 1];
         char right = start[1] + 1 >= pipeMatrix[0].length ? '.' : pipeMatrix[start[0]][start[1] + 1];
-        int count = 0;
 
         if (up == '|' || up == '7' || up == 'F') {
-            if (findFirst) {
-                return new int[] { start[0] - 1, start[1] };
-            } else {
-                count++;
-            }
+            return new int[] { start[0] - 1, start[1] };
         }
         if (down == '|' || down == 'J' || down == 'L') {
-            if (findFirst || count > 0) {
-                return new int[] { start[0] + 1, start[1] };
-            } else {
-                count++;
-            }
-        }
-        if (left == '-' || left == 'L' || left == 'F' && (findFirst || count > 0)) {
-            return new int[] { start[0], start[1] - 1 };
 
+            return new int[] { start[0] + 1, start[1] };
+            }
+            if (left == '-' || left == 'L' || left == 'F') {
+                return new int[] { start[0], start[1] - 1 };
         }
         if (right == '-' || right == '7' || right == 'J') {
             return new int[] { start[0], start[1] + 1 };
@@ -62,21 +69,15 @@ public class PipeMaze {
         throw new IllegalArgumentException("Proper start not found");
     }
 
-    int[] findFirstPipeFromStart() {
-        return findPipesFromStart(true);
-    }
-
-    int[] findSeconddPipeFromStart() {
-        return findPipesFromStart(false);
-    }
-
-    int[] walk(int[] relativePrev, int[] current) {
+    private int[] walk(int[] previous, int[] current) {
         int i = 0;
         int j = 0;
 
+        int[] relativePreviousPosition = new int[] { previous[0] - current[0], previous[1] - current[1] };
+
         switch (pipeMatrix[current[0]][current[1]]) {
             case '|' -> {
-                if (relativePrev[0] < 0) {
+                if (relativePreviousPosition[0] < 0) {
                     i = current[0] + 1;
                 } else {
                     i = current[0] - 1;
@@ -84,7 +85,7 @@ public class PipeMaze {
                 j = current[1];
             }
             case '-' -> {
-                if (relativePrev[1] < 0) {
+                if (relativePreviousPosition[1] < 0) {
                     j = current[1] + 1;
                 } else {
                     j = current[1] - 1;
@@ -92,7 +93,7 @@ public class PipeMaze {
                 i = current[0];
             }
             case 'L' -> {
-                if (relativePrev[0] < 0) {
+                if (relativePreviousPosition[0] < 0) {
                     i = current[0];
                     j = current[1] + 1;
                 } else {
@@ -101,7 +102,7 @@ public class PipeMaze {
                 }
             }
             case 'J' -> {
-                if (relativePrev[0] < 0) {
+                if (relativePreviousPosition[0] < 0) {
                     i = current[0];
                     j = current[1] - 1;
                 } else {
@@ -110,7 +111,7 @@ public class PipeMaze {
                 }
             }
             case '7' -> {
-                if (relativePrev[0] > 0) {
+                if (relativePreviousPosition[0] > 0) {
                     i = current[0];
                     j = current[1] - 1;
                 } else {
@@ -119,7 +120,7 @@ public class PipeMaze {
                 }
             }
             case 'F' -> {
-                if (relativePrev[0] > 0) {
+                if (relativePreviousPosition[0] > 0) {
                     i = current[0];
                     j = current[1] + 1;
                 } else {
@@ -132,42 +133,21 @@ public class PipeMaze {
         return new int[] { i, j };
     }
 
-    List<int[]> getAllPipesOfLoop() {
-        List<int[]> allPipesOfLoop = new ArrayList<>();
-        int[] start = findStart();
-        int[] current = findFirstPipeFromStart();
-        allPipesOfLoop.add(current);
-        int[] firstRelativPrev = new int[] { start[0] - current[0], start[1] - current[1] };
-
-        while (!Arrays.equals(current, start)) {
-            int[] firstNext = walk(firstRelativPrev, current);
-            firstRelativPrev = new int[] { current[0] - firstNext[0], current[1] - firstNext[1] };
-            current = firstNext;
-
-            allPipesOfLoop.add(current);
-        }
-        return allPipesOfLoop;
-    }
-
-    void removeUnusedPipes() {
-        List<int[]> allPipesOfLoop = getAllPipesOfLoop();
-        for (int i = 0; i < pipeMatrix.length; i++) {
-            for (int j = 0; j < pipeMatrix[i].length; j++) {
-                int[] current = new int[] { i, j };
-                if (!isInList(allPipesOfLoop, current)
-                        && (pipeMatrix[i][j] == '|' || pipeMatrix[i][j] == '-' || pipeMatrix[i][j] == '7'
-                                || pipeMatrix[i][j] == 'F' || pipeMatrix[i][j] == 'J' || pipeMatrix[i][j] == 'L')) {
-                    pipeMatrix[i][j] = '.';
+    long countInsideTiles() {
+        long count = 0;
+        char[][] blownUpPipeMatrix = blowUpPipeMatrix();
+        markConnectedOutsideTiles(blownUpPipeMatrix);
+        for (int i = 0; i < blownUpPipeMatrix.length; i++) {
+            for (int j = 0; j < blownUpPipeMatrix[i].length; j++) {
+                if (blownUpPipeMatrix[i][j] == '.') {
+                    count++;
                 }
             }
         }
+        return count;
     }
 
-    private boolean isInList(List<int[]> list, int[] element) {
-        return list.stream().anyMatch(a -> Arrays.equals(a, element));
-    }
-
-    char[][] blowUpPipeMatrix() {
+    private char[][] blowUpPipeMatrix() {
         removeUnusedPipes();
         char[][] blownUpPipeMatrix = new char[pipeMatrix.length *
                 3][pipeMatrix[0].length * 3];
@@ -282,12 +262,30 @@ public class PipeMaze {
         return blownUpPipeMatrix;
     }
 
-    void markConnectedTiles(char[][] matrix, int[] start) {
+    private void removeUnusedPipes() {
+        List<int[]> allPipesOfLoop = getAllPipesOfLoop();
+        for (int i = 0; i < pipeMatrix.length; i++) {
+            for (int j = 0; j < pipeMatrix[i].length; j++) {
+                int[] current = new int[] { i, j };
+                if (!isInList(allPipesOfLoop, current)
+                        && (pipeMatrix[i][j] == '|' || pipeMatrix[i][j] == '-' || pipeMatrix[i][j] == '7'
+                                || pipeMatrix[i][j] == 'F' || pipeMatrix[i][j] == 'J' || pipeMatrix[i][j] == 'L')) {
+                    pipeMatrix[i][j] = '.';
+                }
+            }
+        }
+    }
 
-        Stack<int[]> stack = new Stack<>();
+    private boolean isInList(List<int[]> list, int[] element) {
+        return list.stream().anyMatch(a -> Arrays.equals(a, element));
+    }
+
+    private void markConnectedOutsideTiles(char[][] matrix) {
+
+        Deque<int[]> stack = new ArrayDeque<>();
+        int[] start = new int[] { 0, 0 };
         stack.push(start);
         while (stack.size() > 0) {
-
             int[] current = stack.pop();
             int i = current[0];
             int j = current[1];
@@ -306,21 +304,6 @@ public class PipeMaze {
             stack.push(new int[] { i - 1, j });
             stack.push(new int[] { i, j + 1 });
             stack.push(new int[] { i, j - 1 });
-
         }
-    }
-
-    long countInsideTiles() {
-        long count = 0;
-        char[][] blownUpPipeMatrix = blowUpPipeMatrix();
-        markConnectedTiles(blownUpPipeMatrix, new int[] { 0, 0 });
-        for (int i = 0; i < blownUpPipeMatrix.length; i++) {
-            for (int j = 0; j < blownUpPipeMatrix[i].length; j++) {
-                if (blownUpPipeMatrix[i][j] == '.') {
-                    count++;
-                }
-            }
-        }
-        return count;
     }
 }
