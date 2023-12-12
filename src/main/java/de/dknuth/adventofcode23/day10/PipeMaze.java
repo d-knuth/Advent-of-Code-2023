@@ -3,6 +3,7 @@ package de.dknuth.adventofcode23.day10;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 public class PipeMaze {
     private char[][] pipeMatrix;
@@ -281,28 +282,38 @@ public class PipeMaze {
         return blownUpPipeMatrix;
     }
 
-    void markConnectedTiles(char[][] matrix, int i, int j) {
+    void markConnectedTiles(char[][] matrix, int[] start) {
 
-        if (i < 0 || j < 0 || i >= matrix.length || j >= matrix[0].length) {
-            return;
-        }
+        Stack<int[]> stack = new Stack<>();
+        stack.push(start);
+        while (stack.size() > 0) {
 
-        if (matrix[i][j] == '#' || matrix[i][j] == 'O') {
-            return;
+            int[] current = stack.pop();
+            int i = current[0];
+            int j = current[1];
+            if (i < 0 || j < 0 || i >= matrix.length || j >= matrix[0].length) {
+                continue;
+            }
+
+            if (matrix[i][j] == '#' || matrix[i][j] == 'O') {
+                continue;
+            }
+            if (matrix[i][j] == ' ' || matrix[i][j] == '.') {
+                matrix[i][j] = 'O';
+            }
+
+            stack.push(new int[] { i + 1, j });
+            stack.push(new int[] { i - 1, j });
+            stack.push(new int[] { i, j + 1 });
+            stack.push(new int[] { i, j - 1 });
+
         }
-        if (matrix[i][j] == ' ' || matrix[i][j] == '.') {
-            matrix[i][j] = 'O';
-        }
-        markConnectedTiles(matrix, i + 1, j);
-        markConnectedTiles(matrix, i - 1, j);
-        markConnectedTiles(matrix, i, j + 1);
-        markConnectedTiles(matrix, i, j - 1);
     }
 
     long countInsideTiles() {
         long count = 0;
         char[][] blownUpPipeMatrix = blowUpPipeMatrix();
-        markConnectedTiles(blownUpPipeMatrix, 0, 0);
+        markConnectedTiles(blownUpPipeMatrix, new int[] { 0, 0 });
         for (int i = 0; i < blownUpPipeMatrix.length; i++) {
             for (int j = 0; j < blownUpPipeMatrix[i].length; j++) {
                 if (blownUpPipeMatrix[i][j] == '.') {
