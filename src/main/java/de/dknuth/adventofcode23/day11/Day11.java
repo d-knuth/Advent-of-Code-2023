@@ -9,12 +9,13 @@ public class Day11 implements Day {
     @Override
     public String solutionToPart1(List<String> inputs) {
         Universe universe = new Universe(inputs);
-        return String.valueOf(universe.calcDistances());
+        return String.valueOf(universe.calcDistanceSum(2l));
     }
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        return "";
+        Universe universe = new Universe(inputs);
+        return String.valueOf(universe.calcDistanceSum(1000000l));
     }
 
 }
