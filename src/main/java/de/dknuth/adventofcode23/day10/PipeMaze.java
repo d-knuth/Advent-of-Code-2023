@@ -1,5 +1,7 @@
 package de.dknuth.adventofcode23.day10;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PipeMaze {
@@ -127,5 +129,187 @@ public class PipeMaze {
             default -> throw new IllegalArgumentException();
         }
         return new int[] { i, j };
+    }
+
+    List<int[]> getAllPipesOfLoop() {
+        List<int[]> allPipesOfLoop = new ArrayList<>();
+        int[] start = findStart();
+        int[] current = findFirstPipeFromStart();
+        allPipesOfLoop.add(current);
+        int[] firstRelativPrev = new int[] { start[0] - current[0], start[1] - current[1] };
+
+        while (!Arrays.equals(current, start)) {
+            int[] firstNext = walk(firstRelativPrev, current);
+            firstRelativPrev = new int[] { current[0] - firstNext[0], current[1] - firstNext[1] };
+            current = firstNext;
+
+            allPipesOfLoop.add(current);
+        }
+        return allPipesOfLoop;
+    }
+
+    void removeUnusedPipes() {
+        List<int[]> allPipesOfLoop = getAllPipesOfLoop();
+        for (int i = 0; i < pipeMatrix.length; i++) {
+            for (int j = 0; j < pipeMatrix[i].length; j++) {
+                int[] current = new int[] { i, j };
+                if (!isInList(allPipesOfLoop, current)
+                        && (pipeMatrix[i][j] == '|' || pipeMatrix[i][j] == '-' || pipeMatrix[i][j] == '7'
+                                || pipeMatrix[i][j] == 'F' || pipeMatrix[i][j] == 'J' || pipeMatrix[i][j] == 'L')) {
+                    pipeMatrix[i][j] = '.';
+                }
+            }
+        }
+    }
+
+    private boolean isInList(List<int[]> list, int[] element) {
+        return list.stream().anyMatch(a -> Arrays.equals(a, element));
+    }
+
+    char[][] blowUpPipeMatrix() {
+        removeUnusedPipes();
+        char[][] blownUpPipeMatrix = new char[pipeMatrix.length *
+                3][pipeMatrix[0].length * 3];
+        for (int i = 0; i < pipeMatrix.length; i++) {
+            for (int j = 0; j < pipeMatrix[i].length; j++) {
+                switch (pipeMatrix[i][j]) {
+                    case '|' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    case '-' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+
+                    }
+                    case 'L' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+
+                    }
+                    case 'J' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    case '7' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    case 'F' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    case 'S' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = '#';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = '#';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = '#';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = '#';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = '#';
+                    }
+                    case '.' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = '.';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    case ' ' -> {
+                        blownUpPipeMatrix[i * 3][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 1] = ' ';
+                        blownUpPipeMatrix[i * 3][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 1][j * 3 + 2] = ' ';
+                        blownUpPipeMatrix[i * 3 + 2][j * 3 + 2] = ' ';
+                    }
+                    default -> throw new IllegalArgumentException();
+                }
+            }
+        }
+        return blownUpPipeMatrix;
+    }
+
+    void markConnectedTiles(char[][] matrix, int i, int j) {
+
+        if (i < 0 || j < 0 || i >= matrix.length || j >= matrix[0].length) {
+            return;
+        }
+
+        if (matrix[i][j] == '#' || matrix[i][j] == 'O') {
+            return;
+        }
+        if (matrix[i][j] == ' ' || matrix[i][j] == '.') {
+            matrix[i][j] = 'O';
+        }
+        markConnectedTiles(matrix, i + 1, j);
+        markConnectedTiles(matrix, i - 1, j);
+        markConnectedTiles(matrix, i, j + 1);
+        markConnectedTiles(matrix, i, j - 1);
+    }
+
+    long countInsideTiles() {
+        long count = 0;
+        char[][] blownUpPipeMatrix = blowUpPipeMatrix();
+        markConnectedTiles(blownUpPipeMatrix, 0, 0);
+        for (int i = 0; i < blownUpPipeMatrix.length; i++) {
+            for (int j = 0; j < blownUpPipeMatrix[i].length; j++) {
+                if (blownUpPipeMatrix[i][j] == '.') {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }
