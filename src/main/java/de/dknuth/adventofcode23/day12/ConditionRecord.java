@@ -24,6 +24,17 @@ public class ConditionRecord {
                 .stream().map(Integer::parseInt).toList();
     }
 
+    public void unfold() {
+        StringBuilder builder = new StringBuilder(this.springs);
+        List<Integer> newPattern = new ArrayList<>(this.damagedSpringsPattern);
+        for (int i = 0; i < 4; i++) {
+            builder.append("?").append(this.springs);
+            newPattern.addAll(this.damagedSpringsPattern);
+        }
+        this.springs = builder.toString();
+        this.damagedSpringsPattern = newPattern;
+    }
+
     long countMatches(String springs, List<Integer> pattern) {
         long count = 0;
 
