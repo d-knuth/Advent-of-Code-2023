@@ -12,9 +12,6 @@ class Day13Test {
     void testSolutionToPart1() {
         Day13 day = new Day13();
         List<String> testInputs = InputReader.read("inputDay13test.txt");
-        List<List<String>> inputs = day.generatePatternInputs(testInputs);
-        Pattern pattern = new Pattern(inputs.get(0));
-        long x = pattern.vertSymLinePosition();
         String expectedOutput = "405";
         Assertions.assertEquals(expectedOutput, day.solutionToPart1(testInputs));
     }

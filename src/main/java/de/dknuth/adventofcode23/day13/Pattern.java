@@ -2,26 +2,37 @@ package de.dknuth.adventofcode23.day13;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 
 public class Pattern {
 
-    private char[][] content;
-    private List<String> contentS;
+    private List<String> content;
 
     Pattern(List<String> input) {
-        this.content = new char[input.size()][input.get(0).length()];
-        for (int i = 0; i < input.size(); i++) {
-            for (int j = 0; j < input.get(i).length(); j++) {
-                content[i][j] = input.get(i).charAt(j);
-            }
-        }
-        this.contentS = input;
+        this.content = input;
     }
 
     long vertSymLinePosition() {
-        List<Long> possibleSymLinePositions = vertSymLinePositions(contentS.get(0));
-        for (int i = 1; i < contentS.size(); i++) {
-            possibleSymLinePositions.retainAll(vertSymLinePositions(contentS.get(i)));
+        return symLinePosition("row");
+    }
+
+    long horizSymLinePosition() {
+        return symLinePosition("column");
+    }
+
+    private long symLinePosition(String rowOrColumn) {
+        IntFunction<String> getter;
+        int max;
+        if (rowOrColumn.equals("row")) {
+            getter = this::getRow;
+            max = content.size();
+        } else {
+            getter = this::getColumn;
+            max = content.get(0).length();
+        }
+        List<Long> possibleSymLinePositions = symLinePositions(getter.apply(0));
+        for (int i = 1; i < max; i++) {
+            possibleSymLinePositions.retainAll(symLinePositions(getter.apply(i)));
             if (possibleSymLinePositions.isEmpty()) {
                 return -1;
             }
@@ -29,7 +40,7 @@ public class Pattern {
         return possibleSymLinePositions.get(0);
     }
 
-    private List<Long> vertSymLinePositions(String input) {
+    private List<Long> symLinePositions(String input) {
         List<Long> symLinePosittions = new ArrayList<>();
         int i = input.length();
         if (input.length() % 2 != 0) {
@@ -46,21 +57,16 @@ public class Pattern {
         return symLinePosittions;
     }
 
-    private List<Long> horSymLinePositions(String input) {
-        List<Long> symLinePosittions = new ArrayList<>();
-
-        return symLinePosittions;
+    private String getRow(int i) {
+        return content.get(i);
     }
 
-    private boolean isSymetric(char[] input) {
-        if (input.length % 2 != 0) {
-            return false;
+    private String getColumn(int i) {
+        StringBuilder builder = new StringBuilder();
+        for (int j = 0; j < content.size(); j++) {
+            builder.append(content.get(j).charAt(i));
         }
-        for (int i = 0; i < input.length / 2; i++) {
-            if (input[i] != input[input.length - 1 - i])
-                return false;
-        }
-        return true;
+        return builder.toString();
     }
 
     private boolean isSymetric(String input) {

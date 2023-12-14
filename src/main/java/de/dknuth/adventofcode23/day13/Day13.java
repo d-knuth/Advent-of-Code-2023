@@ -10,8 +10,11 @@ public class Day13 implements Day {
     @Override
     public String solutionToPart1(List<String> inputs) {
 
-        List<Pattern> patterns = generatePatternInputs(inputs).stream().map(Pattern::new).toList();
-        return "";
+        return String.valueOf(generatePatternInputs(inputs).stream()
+                .map(Pattern::new)
+                .map(p -> p.vertSymLinePosition() != -1 ? p.vertSymLinePosition() : p.horizSymLinePosition() * 100)
+                .reduce(0l, Long::sum));
+
     }
 
     @Override
@@ -24,7 +27,7 @@ public class Day13 implements Day {
         int i = 0;
         while (i < inputs.size()) {
             List<String> input = new ArrayList<>();
-            for (int j = 0; !inputs.get(j).isBlank(); j++) {
+            for (int j = i; j < inputs.size() && !inputs.get(j).isBlank(); j++) {
                 input.add(inputs.get(j));
                 i++;
             }
