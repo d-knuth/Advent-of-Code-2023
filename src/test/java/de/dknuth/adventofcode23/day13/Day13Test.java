@@ -18,6 +18,9 @@ class Day13Test {
 
     @Test
     void testSolutionToPart2() {
-
+        Day13 day = new Day13();
+        List<String> testInputs = InputReader.read("inputDay13test.txt");
+        String expectedOutput = "400";
+        Assertions.assertEquals(expectedOutput, day.solutionToPart2(testInputs));
     }
 }

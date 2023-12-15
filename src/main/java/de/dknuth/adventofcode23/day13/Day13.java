@@ -19,7 +19,11 @@ public class Day13 implements Day {
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        return "";
+        return String.valueOf(generatePatternInputs(inputs).stream()
+                .map(Pattern::new)
+                .map(p -> p.vertSmudgedSymLine() != -1 ? p.vertSmudgedSymLine() : p.horizSmudgedSymLine() * 100)
+                .reduce(0l, Long::sum));
+
     }
 
     List<List<String>> generatePatternInputs(List<String> inputs) {

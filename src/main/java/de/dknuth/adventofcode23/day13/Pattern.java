@@ -2,14 +2,22 @@ package de.dknuth.adventofcode23.day13;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 public class Pattern {
 
     private List<String> content;
+    private long oldVertSymLine;
+    private long oldHorizSymLine;
 
     Pattern(List<String> input) {
         this.content = input;
+        this.oldVertSymLine = vertSymLinePosition();
+        this.oldHorizSymLine = horizSymLinePosition();
+
     }
 
     long vertSymLinePosition() {
@@ -38,6 +46,46 @@ public class Pattern {
             }
         }
         return possibleSymLinePositions.get(0);
+    }
+
+    long vertSmudgedSymLine() {
+        return smudgedSymLine("row");
+    }
+
+    long horizSmudgedSymLine() {
+        return smudgedSymLine("collumn");
+    }
+
+    private long smudgedSymLine(String rowOrColumn) {
+        List<List<Long>> allPossibleSmudgedSymLines = allPossibleSmudgedSymLines(rowOrColumn);
+        return allPossibleSmudgedSymLines.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream()
+                .filter(e -> e.getValue() == allPossibleSmudgedSymLines.size() - 1)
+                .map(Entry::getKey)
+                .findFirst().orElse(-1l);
+    }
+
+    private List<List<Long>> allPossibleSmudgedSymLines(String rowOrColumn) {
+        List<List<Long>> allSymLines = new ArrayList<>();
+        IntFunction<String> getter;
+        int max;
+        long symlineToIgnore;
+        if (rowOrColumn.equals("row")) {
+            getter = this::getRow;
+            max = content.size();
+            symlineToIgnore = oldVertSymLine;
+        } else {
+            getter = this::getColumn;
+            max = content.get(0).length();
+            symlineToIgnore = oldHorizSymLine;
+        }
+        for (int i = 0; i < max; i++) {
+            List<Long> symLines = symLinePositions(getter.apply(i));
+            symLines.remove(symlineToIgnore);
+            allSymLines.add(symLines);
+        }
+        return allSymLines;
     }
 
     private List<Long> symLinePositions(String input) {
