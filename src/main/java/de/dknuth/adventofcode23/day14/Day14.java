@@ -18,7 +18,11 @@ public class Day14 implements Day {
 
     @Override
     public String solutionToPart2(List<String> inputs) {
-        return "";
+        Platform platform = new Platform(inputs);
+        platform.performCycle(1000000000);
+        return String.valueOf(LongStream.rangeClosed(1, platform.getContent().size())
+                .map(i -> platform.calcWeightOfRow((int) i))
+                .sum());
     }
 
 }
